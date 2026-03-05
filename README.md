@@ -1,51 +1,75 @@
-# Dashbord_SGI
+# Dashbord_SGI - Guide d'utilisation
 
-Projet Streamlit dedie au dashboard SGI (MPOX, MVE, CHOLERA), connecte directement a DHIS2.
+Dashbord_SGI est une application de visualisation sanitaire connectee a DHIS2 (source EZD), concue pour suivre les SGI:
+- MPOX
+- MVE
+- CHOLERA
 
-## Lancement
+## A quoi sert l'application
 
-```powershell
-python -m pip install -r requirements.txt
-streamlit run dashbord_sgi.py
-```
+L'application permet de:
+- se connecter avec un compte DHIS2,
+- choisir une maladie,
+- analyser les donnees par section metier,
+- filtrer par niveau geographique,
+- suivre l'evolution des indicateurs dans le temps.
 
-## Fonctionnalites
+## Connexion
 
-- Connexion DHIS2 avec identifiants utilisateur.
-- Source DHIS2 unique (EZD) dans la sidebar.
-- Lecture de `/api/me` pour adapter le dashboard au profil connecte.
-- Filtre `Maladie` (MPOX, MVE, CHOLERA) selon les groupes utilisateur.
-- Onglets de section:
-  - `Vue d'ensemble`
-  - `Surveillance`
-  - `INRB`
-  - `PEV`
-- Filtres organisationnels en cascade: `Province` -> `Zone de Sante` -> `Aire de Sante`.
-- Requetes analytiques sur `/api/analytics`.
-- Portee organisationnelle configurable (defaut recommande):
-  - `USER_ORGUNIT`
-  - `USER_ORGUNIT_CHILDREN`
-  - `USER_ORGUNIT_GRANDCHILDREN`
-  - `USER_ORGUNIT_DESCENDANTS`
+1. Ouvrir l'application.
+2. Dans la barre laterale, saisir:
+   - Nom d'utilisateur
+   - Mot de passe
+3. Cliquer sur `Se connecter`.
 
-## Configuration
+Une fois connecte, l'application charge automatiquement les donnees selon vos droits DHIS2.
 
-Creer `.streamlit/secrets.toml` a partir de `.streamlit/secrets.toml.example`.
+## Navigation dans le tableau de bord
 
-Variables principales:
-- `DHIS2_URL_EZD`
-- `DHIS2_DATA_SOURCES` (optionnel, mapping JSON label->URL)
-- `DHIS2_URL` (optionnel, repli)
-- `DHIS2_TIMEOUT_CONNECT` (optionnel)
-- `DHIS2_TIMEOUT_READ` (optionnel)
-- `DHIS2_HTTP_RETRIES` (optionnel)
-- `DHIS2_ALLOW_ALL_IF_NO_GROUP_MATCH` (optionnel)
-- `DHIS2_PERIOD_YEARS_BACK` (optionnel)
-- `DHIS2_FIXED_OU_SCOPE` (optionnel, ex: `USER_ORGUNIT_DESCENDANTS`)
-- `DHIS2_ANALYTICS_OU_SCOPE_FALLBACKS` (optionnel, liste de fallback en cas de `409`)
-- `DHIS2_SGI_GROUPS` (optionnel mais recommande)
-- `DHIS2_SGI_METRICS` (recommande)
+Apres connexion:
 
-Note importante:
-- si votre serveur est publie sous un contexte web, utilisez l'URL avec ce contexte (ex: `https://ezd.snisrdc.com/dhis`).
-- le script tente aussi une resolution automatique (`/dhis`) en cas de `404` sur `/api/me`.
+1. Choisir la `Maladie` (MPOX, MVE ou CHOLERA).
+2. Parcourir les onglets:
+   - `Vue d'ensemble`
+   - `Surveillance`
+   - `INRB`
+   - `PEV`
+
+Chaque onglet presente des graphiques et indicateurs adaptes au theme.
+
+## Utilisation des filtres
+
+Les filtres sont interactifs et se mettent a jour entre eux:
+
+- `Province`
+- `Zone de Sante`
+- `Aire de Sante`
+- `Date de collecte` (plage de temps)
+
+Exemple:
+- si vous choisissez une Province, la liste des Zones se limite a cette Province.
+- si vous choisissez une Zone, la liste des Aires se limite a cette Zone.
+
+## Comment lire les resultats
+
+Le dashboard affiche notamment:
+- la situation generale de l'epidemie,
+- la situation hebdomadaire,
+- les proportions par tranche d'age,
+- l'evolution des cas, de la letalite et de la positivite,
+- des repartitions territoriales,
+- une table brute en bas de page.
+
+Conseil:
+- commencez par une plage de dates large,
+- puis affinez progressivement par Province -> Zone -> Aire pour une analyse detaillee.
+
+## Deconnexion
+
+Dans la barre laterale, cliquer sur `Se deconnecter`.
+
+## Notes importantes
+
+- Les donnees affichees dependent de vos droits DHIS2.
+- Certaines visualisations peuvent etre vides si aucune donnee n'existe pour les filtres choisis.
+- La date de mise a jour affichee dans l'application correspond a la date du jour d'ouverture.
